@@ -38,6 +38,9 @@ public class Colisiones extends Applet implements Runnable,
     private Elefante dumbo;    // Objeto de la clase Elefante
     private Raton raton;    //Objeto de la clase Raton
 
+    private boolean mouse_clicked = false; 
+    private int new_pos_x;
+    private int new_pos_y;
     /**
      * Metodo <I>init</I> sobrescrito de la clase <code>Applet</code>.<P>
      * En este metodo se inizializan las variables o se crean los objetos a
@@ -110,6 +113,11 @@ public class Colisiones extends Applet implements Runnable,
      *
      */
     public void actualiza() {
+        if (mouse_clicked) {
+            dumbo.setPosX(new_pos_x);
+            dumbo.setPosY(new_pos_y);
+            mouse_clicked = false; 
+        }
         //Dependiendo de la direccion del elefante es hacia donde se mueve.
         switch (direccion) {
             case 1: {
@@ -300,8 +308,9 @@ public class Colisiones extends Applet implements Runnable,
     
     @Override
     public void mouseClicked(MouseEvent me) {
-        dumbo.setPosX(me.getX());
-        dumbo.setPosY(me.getY());
+        mouse_clicked = true; 
+        new_pos_x = me.getX();
+        new_pos_y = me.getY();
     }
     
     @Override

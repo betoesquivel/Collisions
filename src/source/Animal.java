@@ -118,5 +118,14 @@ public class Animal {
 	public boolean intersecta(Animal obj){
 		return getPerimetro().intersects(obj.getPerimetro());
 	}
+        
+        /**
+         * Checks if the animals coordinates 
+         * @param obj
+         * @return 
+         */
+        public boolean animal_is_clicked(Animal obj){
+            return false; 
+        }
 	
 }
