@@ -38,9 +38,10 @@ public class Colisiones extends Applet implements Runnable,
     private Elefante dumbo;    // Objeto de la clase Elefante
     private Raton raton;    //Objeto de la clase Raton
 
-    private boolean mouse_clicked = false; 
+    private boolean mouse_clicked = false;
     private int new_pos_x;
     private int new_pos_y;
+
     /**
      * Metodo <I>init</I> sobrescrito de la clase <code>Applet</code>.<P>
      * En este metodo se inizializan las variables o se crean los objetos a
@@ -48,9 +49,9 @@ public class Colisiones extends Applet implements Runnable,
      */
     public void init() {
         direccion = 4;
-        
+
         this.setSize(500, 500);
-        
+
         int posX = (int) (Math.random() * (getWidth() / 4));    // posicion en x es un cuarto del applet
         int posY = (int) (Math.random() * (getHeight() / 4));    // posicion en y es un cuarto del applet
         URL eURL = this.getClass().getResource("/images/elefante.gif");
@@ -116,7 +117,7 @@ public class Colisiones extends Applet implements Runnable,
         if (mouse_clicked) {
             dumbo.setPosX(new_pos_x);
             dumbo.setPosY(new_pos_y);
-            mouse_clicked = false; 
+            mouse_clicked = false;
         }
         //Dependiendo de la direccion del elefante es hacia donde se mueve.
         switch (direccion) {
@@ -143,8 +144,10 @@ public class Colisiones extends Applet implements Runnable,
         incY = ((int) (Math.random() * (MAX - MIN))) + MIN;
 
         //Acutalizo la posicion del raton
-        raton.setPosX(raton.getPosX() + incX);
-        raton.setPosY(raton.getPosY() + incY);
+        //raton.setPosX(raton.getPosX() + incX);
+        //raton.setPosY(raton.getPosY() + incY);
+        raton.follow(dumbo);
+
     }
 
     /**
@@ -159,29 +162,29 @@ public class Colisiones extends Applet implements Runnable,
                     direccion = 2;
                     sonido.play();
                 }
-                break;                
-            }            
+                break;
+            }
             case 2: { //se mueve hacia abajo con la flecha abajo.
                 if (dumbo.getPosY() + dumbo.getAlto() > getHeight()) {
                     direccion = 1;
                     sonido.play();
                 }
-                break;                
-            }            
+                break;
+            }
             case 3: { //se mueve hacia izquierda con la flecha izquierda.
                 if (dumbo.getPosX() < 0) {
                     direccion = 4;
                     sonido.play();
                 }
-                break;                
-            }            
+                break;
+            }
             case 4: { //se mueve hacia derecha con la flecha derecha.
                 if (dumbo.getPosX() + dumbo.getAncho() > getWidth()) {
                     direccion = 3;
                     sonido.play();
                 }
-                break;                
-            }            
+                break;
+            }
         }
 
         //checa colision con el applet
@@ -196,7 +199,7 @@ public class Colisiones extends Applet implements Runnable,
         if (raton.getPosY() + raton.getAlto() > getHeight()) {
             raton.setPosY(raton.getPosY() - incY);
             rat.play();
-        }        
+        }
         if (raton.getPosY() < 0) {
             raton.setPosY(raton.getPosY() - incY);
             rat.play();
@@ -206,11 +209,12 @@ public class Colisiones extends Applet implements Runnable,
         if (dumbo.intersecta(raton)) {
             bomb.play();    //sonido al colisionar
             //El elefante se mueve al azar en la mitad izquierda del applet.
-            dumbo.setPosX((int) (Math.random() * (getWidth() / 2 - dumbo.getAncho())));            
+            dumbo.setPosX((int) (Math.random() * (getWidth() / 2 - dumbo.getAncho())));
             dumbo.setPosY((int) (Math.random() * (getHeight() / 2 - dumbo.getAlto())));
             //El raton se mueve al azar en la mitad derecha del appler.
             raton.setPosX((int) (Math.random() * getWidth() / 2) + getWidth() / 2 - raton.getAncho());
             raton.setPosY((int) (Math.random() * getHeight() / 2) + getHeight() / 2 - raton.getAlto());
+            raton.accelerate();
         }
     }
 
@@ -270,7 +274,7 @@ public class Colisiones extends Applet implements Runnable,
      * teclas.
      */
     public void keyTyped(KeyEvent e) {
-        
+
     }
 
     /**
@@ -282,7 +286,7 @@ public class Colisiones extends Applet implements Runnable,
      * @param e es el <code>evento</code> que se genera en al soltar las teclas.
      */
     public void keyReleased(KeyEvent e) {
-        
+
     }
 
     /**
@@ -298,39 +302,41 @@ public class Colisiones extends Applet implements Runnable,
             //Dibuja la imagen en la posicion actualizada
             g.drawImage(dumbo.getImagenI(), dumbo.getPosX(), dumbo.getPosY(), this);
             g.drawImage(raton.getImagenI(), raton.getPosX(), raton.getPosY(), this);
-            
+
         } else {
             //Da un mensaje mientras se carga el dibujo	
             g.drawString("No se cargo la imagen..", 20, 20);
         }
-        
+
     }
-    
+
     @Override
     public void mouseClicked(MouseEvent me) {
-        mouse_clicked = true; 
         new_pos_x = me.getX();
         new_pos_y = me.getY();
+        if (!dumbo.animal_is_clicked(new_pos_x, new_pos_y)) {
+            mouse_clicked = true;
+        }
     }
-    
+
     @Override
     public void mousePressed(MouseEvent me) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    
+
     @Override
     public void mouseReleased(MouseEvent me) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    
+
     @Override
     public void mouseEntered(MouseEvent me) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    
+
     @Override
     public void mouseExited(MouseEvent me) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    
+
 }
